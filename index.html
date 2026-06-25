@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Craving Bites Pickle Bottle</title>
+
+<script type="module"
+src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
+</script>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, sans-serif;
+    background:#faf7f2;
+    color:#333;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:30px 20px;
+}
+
+.hero{
+    text-align:center;
+}
+
+.hero h1{
+    color:#8b4513;
+    margin-bottom:10px;
+}
+
+.hero p{
+    margin-bottom:20px;
+    color:#666;
+}
+
+.viewer-wrapper{
+    width:100%;
+    max-width:700px;
+    margin:0 auto;
+}
+
+model-viewer{
+    width:100%;
+    height:600px;
+    background:white;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.button-row{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-top:25px;
+}
+
+.btn{
+    border:none;
+    border-radius:12px;
+    padding:14px 24px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+}
+
+.btn-primary{
+    background:#ff6b00;
+    color:white;
+}
+
+.btn-secondary{
+    background:#ffffff;
+    color:#333;
+    border:1px solid #ddd;
+}
+
+.features{
+    margin-top:50px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 5px 15px rgba(0,0,0,.05);
+    text-align:center;
+}
+
+.status{
+    margin-top:15px;
+    color:#666;
+    font-size:14px;
+}
+
+@media(max-width:768px){
+    model-viewer{
+        height:420px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="hero">
+
+        <h1>Craving Bites Pickle Bottle</h1>
+
+        <p>
+            Rotate the bottle in 3D or place it in your kitchen using Augmented Reality.
+        </p>
+
+        <div class="viewer-wrapper">
+
+            <model-viewer
+                id="pickleViewer"
+
+                src="mangopickle.glb"
+
+                ios-src="MangoPickle.usdz"
+
+                alt="Craving Bites Pickle Bottle"
+
+                camera-controls
+                auto-rotate
+                rotation-per-second="60deg"
+                shadow-intensity="1"
+
+                ar
+                ar-modes="scene-viewer quick-look webxr"
+
+                exposure="1">
+
+                <button
+                    id="internalARButton"
+                    slot="ar-button"
+                    style="
+                        background:#ff6b00;
+                        color:white;
+                        border:none;
+                        padding:12px 20px;
+                        border-radius:10px;
+                        font-weight:bold;
+                        cursor:pointer;">
+                    View In My Kitchen
+                </button>
+
+            </model-viewer>
+
+        </div>
+
+        <div class="button-row">
+
+            <button
+                id="externalARButton"
+                class="btn btn-primary"
+                style="display:none;">
+                View In My Kitchen
+            </button>
+
+            <a
+                href="https://cravingbites.in"
+                class="btn btn-secondary"
+                style="text-decoration:none;">
+                Order Now
+            </a>
+
+        </div>
+
+        <div id="status" class="status"></div>
+
+    </div>
+
+    <div class="features">
+
+        <div class="card">
+            <h3>Homemade Taste</h3>
+            <p>Authentic traditional pickle recipe.</p>
+        </div>
+
+        <div class="card">
+            <h3>360° Product View</h3>
+            <p>Inspect the bottle from every angle.</p>
+        </div>
+
+        <div class="card">
+            <h3>Mobile AR</h3>
+            <p>Place the bottle on your kitchen counter.</p>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const viewer = document.getElementById('pickleViewer');
+const arButton = document.getElementById('externalARButton');
+const status = document.getElementById('status');
+
+function updateUI() {
+
+    if(viewer.canActivateAR){
+        arButton.style.display = 'inline-block';
+        status.innerHTML =
+            "AR available on this device.";
+    } else {
+        arButton.style.display = 'none';
+        status.innerHTML =
+            "Interactive 3D mode available. AR requires a supported mobile device.";
+    }
+}
+
+viewer.addEventListener('load', updateUI);
+
+arButton.addEventListener('click', async () => {
+    try{
+        await viewer.activateAR();
+    }
+    catch(error){
+        console.error(error);
+
+        alert(
+            "AR is not supported on this device. Please use Android Chrome or iPhone Safari."
+        );
+    }
+});
+
+viewer.addEventListener('ar-status', (event) => {
+    console.log('AR Status:', event.detail.status);
+});
+
+setTimeout(updateUI, 1000);
+
+</script>
+
+</body>
+</html>
